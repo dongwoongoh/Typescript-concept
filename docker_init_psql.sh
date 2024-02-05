@@ -13,7 +13,7 @@ rm -rf $INIT_SQL
 if [ ! -f "$INIT_SQL" ]; then
     echo "Creating init.sql..."
     echo "CREATE DATABASE $DB_NAME;" >$INIT_SQL
-    echo "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;" >>$INIT_SQL
+    echo "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_NAME;" >>$INIT_SQL
 else
     echo "init.sql already exists."
 fi
@@ -26,8 +26,7 @@ else
 fi
 
 docker run -d \
-    -e POSTGRES_USER=DB_NAME \
+    -e POSTGRES_USER=$DB_NAME \
     -e POSTGRES_PASSWORD=$DB_PASS \
-    -v $INIT_SQL:/docker-entrypoint-initdb.d/init.sql \
     --name $DB_NAME \
     postgres:14.10-alpine3.18
