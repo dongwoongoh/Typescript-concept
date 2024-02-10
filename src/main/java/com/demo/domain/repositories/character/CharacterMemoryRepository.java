@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 
 public class CharacterMemoryRepository implements CharacterRepository {
 
-    private static final LinkedHashMap<Long, Character> store = new LinkedHashMap<>();
+    private final LinkedHashMap<Long, Character> store = new LinkedHashMap<>();
 
     @Override
     public synchronized void save(Character character) {
