@@ -4,26 +4,41 @@ import com.demo.domain.entities.Character;
 import com.demo.domain.repositories.character.CharacterMemoryRepository;
 import com.demo.domain.repositories.character.CharacterRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CharacterMemoryRepositoryTest {
-    private static final CharacterRepository characterRepository = new CharacterMemoryRepository();
-    private static final Long id = 1L;
 
-    @Test()
+    private CharacterRepository characterRepository;
+
+    @BeforeEach
+    void setUp() {
+        characterRepository = new CharacterMemoryRepository();
+    }
+
+    @Test
     @DisplayName("should save a new character")
-    void save() {
+    void save_success() {
+        final Long id = 1L;
         final Character character = new Character(id);
         characterRepository.save(character);
         final Character findCharacter = characterRepository.find(character.getId());
+        Assertions.assertThat(findCharacter).isNotNull();
         Assertions.assertThat(character.getId()).isEqualTo(findCharacter.getId());
+        Assertions.assertThatThrownBy(() -> characterRepository.save(character))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("already exists");
     }
 
-    @Test()
+    @Test
     @DisplayName("should success find a character")
     void find() {
-        final Character character = characterRepository.find(id);
-        Assertions.assertThat(character.getId()).isEqualTo(id);
+        final Long id = 2L;
+        final Character character = new Character(id);
+        characterRepository.save(character);
+        final Character foundCharacter = characterRepository.find(id);
+        Assertions.assertThat(foundCharacter).isNotNull();
+        Assertions.assertThat(foundCharacter.getId()).isEqualTo(id);
     }
 }

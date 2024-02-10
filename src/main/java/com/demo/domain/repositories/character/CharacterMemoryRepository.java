@@ -9,9 +9,12 @@ public class CharacterMemoryRepository implements CharacterRepository {
     private static final LinkedHashMap<Long, Character> store = new LinkedHashMap<>();
 
     @Override
-    public void save(Character character) {
-        store.put(character.getId(), character);
-
+    public synchronized void save(Character character) {
+        if (store.containsKey(character.getId())) {
+            throw new IllegalArgumentException(character.getId() + " already exists.");
+        } else {
+            store.put(character.getId(), character);
+        }
     }
 
     @Override
@@ -19,8 +22,4 @@ public class CharacterMemoryRepository implements CharacterRepository {
         return store.get(id);
     }
 
-    @Override
-    public Character[] findAll() {
-        return store.values().toArray(new Character[0]);
-    }
 }
