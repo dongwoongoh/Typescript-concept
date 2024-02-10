@@ -3,6 +3,8 @@ package com.demo.domain.repositories.character;
 import com.demo.domain.entities.Character;
 
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CharacterMemoryRepository implements CharacterRepository {
 
@@ -22,4 +24,12 @@ public class CharacterMemoryRepository implements CharacterRepository {
         return store.get(id);
     }
 
+    @Override
+    public List<Character> findAll(int page, int size) {
+        int start = page * size;
+        return store.values().stream()
+                .skip(start)
+                .limit(size)
+                .collect(Collectors.toList());
+    }
 }
